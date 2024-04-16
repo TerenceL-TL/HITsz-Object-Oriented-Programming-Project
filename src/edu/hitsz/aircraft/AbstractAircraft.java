@@ -35,7 +35,7 @@ public abstract class AbstractAircraft extends AbstractFlyingObject {
     }
 
     public void increaseHp(int increase){
-        hp = Math.max(increase+hp, maxHp);
+        hp = Math.min(increase+hp, maxHp);
     }
 
     public int getHp() {

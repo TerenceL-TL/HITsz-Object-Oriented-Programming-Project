@@ -26,7 +26,7 @@ public class HealProp extends BaseProp {
 
     @Override
     public void effect(HeroAircraft obj) {
-        System.out.println("FireSupply active!");
+        System.out.println("Heal active!");
         obj.increaseHp(HealHp);
         vanish();
     }

@@ -7,6 +7,13 @@ import edu.hitsz.props.BaseProp;
 import edu.hitsz.props.BombProp;
 import edu.hitsz.props.FireBuffProp;
 import edu.hitsz.props.HealProp;
+
+import edu.hitsz.factory.Enemy.EliteEnemyFactory;
+import edu.hitsz.factory.Enemy.MobEnemyFactory;
+import edu.hitsz.factory.Prop.FireBuffPropFactory;
+import edu.hitsz.factory.Prop.BombPropFactory;
+import edu.hitsz.factory.Prop.HealPropFactory;
+
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 import javax.swing.*;
@@ -41,6 +48,13 @@ public class Game extends JPanel {
     private final List<BaseBullet> enemyBullets;
     private final List<BaseProp> props;
 
+    private final EliteEnemyFactory eliteEnemyFactory;
+    private final MobEnemyFactory mobEnemyFactory;
+    private final BombPropFactory bombPropFactory;
+    private final FireBuffPropFactory fireBuffPropFactory;
+    private final HealPropFactory healPropFactory;
+
+
     /**
      * 屏幕中出现的敌机最大数量
      */
@@ -59,7 +73,7 @@ public class Game extends JPanel {
      * 周期（ms)
      * 指示子弹的发射、敌机的产生频率
      */
-    private int cycleDuration = 600;
+    private int cycleDuration = 100;
     private int cycleTime = 0;
 
     /**
@@ -73,15 +87,33 @@ public class Game extends JPanel {
     private double eliteAppearRate = 0.2;
 
     public Game() {
-        heroAircraft = new HeroAircraft(
+
+        //if(mode == easy)
+        {
+            EliteEnemyFactory.setSpeedX((int)5);
+            EliteEnemyFactory.setSpeedY((int)10);
+            EliteEnemyFactory.setHp((int)60);
+
+            MobEnemyFactory.setSpeedX((int)5);
+            MobEnemyFactory.setSpeedY((int)10);
+            MobEnemyFactory.setHp((int)30);
+        }
+
+        heroAircraft = HeroAircraft.getInstance(
                 Main.WINDOW_WIDTH / 2,
                 Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight() ,
-                0, 0, 100);
+                0, 0, 1000);
 
         enemyAircrafts = new LinkedList<>();
         heroBullets = new LinkedList<>();
         enemyBullets = new LinkedList<>();
         props = new LinkedList<>();
+
+        eliteEnemyFactory = new EliteEnemyFactory();
+        mobEnemyFactory = new MobEnemyFactory();
+        healPropFactory = new HealPropFactory();
+        fireBuffPropFactory = new FireBuffPropFactory();
+        bombPropFactory = new BombPropFactory();
 
         /**
          * Scheduled 线程池，用于定时任务调度
@@ -115,22 +147,10 @@ public class Game extends JPanel {
                 if (enemyAircrafts.size() < enemyMaxNumber) {
                     double dice = Math.random();
                     if (dice < eliteAppearRate) {
-                        enemyAircrafts.add(new EliteEnemy(
-                                (int) (Math.random() * (Main.WINDOW_WIDTH - ImageManager.MOB_ENEMY_IMAGE.getWidth())),
-                                (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05),
-                                5 * (Math.random() < 0.5 ? -1 : 1),
-                                10,
-                                60
-                        ));
+                        enemyAircrafts.add(eliteEnemyFactory.createEnemy());
                     }
                     else {
-                        enemyAircrafts.add(new MobEnemy(
-                                (int) (Math.random() * (Main.WINDOW_WIDTH - ImageManager.MOB_ENEMY_IMAGE.getWidth())),
-                                (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05),
-                                0,
-                                10,
-                                30
-                        ));
+                        enemyAircrafts.add(mobEnemyFactory.createEnemy());
                     }
                 }
                 // 飞机射出子弹
@@ -256,15 +276,15 @@ public class Game extends JPanel {
                             double dice = Math.random();
                             if (dice < 0.3)
                             {
-                                props.add(new HealProp(enemyAircraft.getLocationX(), enemyAircraft.getLocationY(), 0, enemyAircraft.getSpeedY(), true, 0, 20));
+                                props.add(healPropFactory.createProp(enemyAircraft.getLocationX(), enemyAircraft.getLocationY(), 0, enemyAircraft.getSpeedY()));
                             }
                             else if (dice < 0.6)
                             {
-                                props.add(new FireBuffProp(enemyAircraft.getLocationX(), enemyAircraft.getLocationY(), 0, enemyAircraft.getSpeedY(), true, 0, 3));
+                                props.add(fireBuffPropFactory.createProp(enemyAircraft.getLocationX(), enemyAircraft.getLocationY(), 0, enemyAircraft.getSpeedY()));
                             }
                             else if (dice < 0.9)
                             {
-                                props.add(new BombProp(enemyAircraft.getLocationX(), enemyAircraft.getLocationY(), 0, enemyAircraft.getSpeedY(), true, 0));
+                                props.add(bombPropFactory.createProp(enemyAircraft.getLocationX(), enemyAircraft.getLocationY(), 0, enemyAircraft.getSpeedY()));
                             }
                         }
                         else {

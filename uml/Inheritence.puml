@@ -111,11 +111,11 @@ class HealProp{
     - HealHp:int
     + changeHealHp(int HealHp):void
     + GetHealHp():int
-    +HealProp(int locationX, int locationY,
+    + HealProp(int locationX, int locationY,
                                   int speedX, int speedY,
                                   boolean imme_effect, double effect_time,
                                   int HealHp)
-    +effect(HeroAircraft obj):void
+    + effect(HeroAircraft obj):void
 }
 
 BaseProp <|-- BombProp
@@ -125,5 +125,54 @@ BaseProp <|-- HealProp
 AbstractFlyingObject <|-- AbstractAircraft
 AbstractFlyingObject <|-- BaseBullet
 AbstractFlyingObject <|-- BaseProp
+
+interface EnemyFactory{
+    + {abstract} createEnemy():AbstractAircraft
+}
+
+class MobEnemyFactory{
+    - {static} speedX
+    - {static} speedY
+    - {static} hp
+    + {static} setSpeedX(int _speedX):void
+    + {static} setSpeedY(int _speedY):void
+    + {static} setHp(int _hp):void
+    + createEnemy():AbstractAircraft
+}
+
+class EliteEnemyFactory{
+    - {static} speedX
+    - {static} speedY
+    - {static} hp
+    + {static} setSpeedX(int _speedX):void
+    + {static} setSpeedY(int _speedY):void
+    + {static} setHp(int _hp):void
+    + createEnemy():AbstractAircraft
+}
+
+EnemyFactory <|.. MobEnemyFactory
+EnemyFactory <|.. EliteEnemyFactory
+
+interface PropFactory{
+    + {abstract} createProp(int spawnX, int spawnY, int speedX, int speedY):BaseProp
+}
+
+class BombPropFactory{
+    + createProp(int spawnX, int spawnY, int speedX, int speedY):BaseProp
+}
+
+class FireBuffPropFactory{
+    + createProp(int spawnX, int spawnY, int speedX, int speedY):BaseProp
+}
+
+class HealPropFactory{
+    + createProp(int spawnX, int spawnY, int speedX, int speedY):BaseProp
+}
+
+PropFactory <|.. BombPropFactory
+PropFactory <|.. FireBuffPropFactory
+PropFactory <|.. HealPropFactory
+
+
 
 @enduml

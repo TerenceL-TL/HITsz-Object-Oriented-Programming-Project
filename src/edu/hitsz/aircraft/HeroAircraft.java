@@ -12,6 +12,23 @@ import java.util.List;
  */
 public class HeroAircraft extends AbstractAircraft {
 
+    // Singleton
+    private static volatile HeroAircraft craft;
+
+    // Get singleton instance
+    public static HeroAircraft getInstance(int locationX, int locationY, int speedX, int speedY, int hp)
+    {
+        if(craft == null)
+        {
+            synchronized (HeroAircraft.class) {
+                if(craft == null) {
+                    craft = new HeroAircraft(locationX, locationY, speedX, speedY, hp);
+                }
+            }
+        }
+        return craft;
+    }
+
     /**攻击方式 */
 
     /**
@@ -41,7 +58,7 @@ public class HeroAircraft extends AbstractAircraft {
      * @param speedY 英雄机射出的子弹的基准速度（英雄机无特定速度）
      * @param hp    初始生命值
      */
-    public HeroAircraft(int locationX, int locationY, int speedX, int speedY, int hp) {
+    private HeroAircraft(int locationX, int locationY, int speedX, int speedY, int hp) {
         super(locationX, locationY, speedX, speedY, hp);
     }
 
@@ -60,7 +77,7 @@ public class HeroAircraft extends AbstractAircraft {
         int x = this.getLocationX();
         int y = this.getLocationY() + direction*2;
         int speedX = 0;
-        int speedY = this.getSpeedY() + direction*5;
+        int speedY = direction * 15;
         BaseBullet bullet;
         for(int i=0; i<shootNum; i++){
             // 子弹发射位置相对飞机位置向前偏移
