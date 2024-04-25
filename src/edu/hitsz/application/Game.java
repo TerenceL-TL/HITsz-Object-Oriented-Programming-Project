@@ -3,6 +3,8 @@ package edu.hitsz.application;
 import edu.hitsz.aircraft.*;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.basic.AbstractFlyingObject;
+import edu.hitsz.factory.Enemy.BossEnemyFactory;
+import edu.hitsz.factory.Enemy.SuperEnemyFactory;
 import edu.hitsz.props.BaseProp;
 import edu.hitsz.props.BombProp;
 import edu.hitsz.props.FireBuffProp;
@@ -48,6 +50,8 @@ public class Game extends JPanel {
     private final List<BaseBullet> enemyBullets;
     private final List<BaseProp> props;
 
+    private final SuperEnemyFactory superEnemyFactory;
+    private final BossEnemyFactory bossEnemyFactory;
     private final EliteEnemyFactory eliteEnemyFactory;
     private final MobEnemyFactory mobEnemyFactory;
     private final BombPropFactory bombPropFactory;
@@ -73,7 +77,7 @@ public class Game extends JPanel {
      * 周期（ms)
      * 指示子弹的发射、敌机的产生频率
      */
-    private int cycleDuration = 100;
+    private int cycleDuration = 400;
     private int cycleTime = 0;
 
     /**
@@ -85,6 +89,7 @@ public class Game extends JPanel {
      * 精英敌机出现概率
      */
     private double eliteAppearRate = 0.2;
+    private double superAppearRate = 0.2;
 
     public Game() {
 
@@ -109,6 +114,8 @@ public class Game extends JPanel {
         enemyBullets = new LinkedList<>();
         props = new LinkedList<>();
 
+        superEnemyFactory = new SuperEnemyFactory();
+        bossEnemyFactory = new BossEnemyFactory();
         eliteEnemyFactory = new EliteEnemyFactory();
         mobEnemyFactory = new MobEnemyFactory();
         healPropFactory = new HealPropFactory();
@@ -146,11 +153,31 @@ public class Game extends JPanel {
 
                 if (enemyAircrafts.size() < enemyMaxNumber) {
                     double dice = Math.random();
-                    if (dice < eliteAppearRate) {
-                        enemyAircrafts.add(eliteEnemyFactory.createEnemy());
+                    if (dice < eliteAppearRate + superAppearRate) {
+                        if(dice < eliteAppearRate) {
+                            enemyAircrafts.add(eliteEnemyFactory.createEnemy());
+                        }
+                        else {
+                            enemyAircrafts.add(superEnemyFactory.createEnemy());
+                        }
                     }
                     else {
                         enemyAircrafts.add(mobEnemyFactory.createEnemy());
+                    }
+                }
+
+                if(score % 250 == 0 && score != 0)
+                {
+                    boolean noBoss = true;
+                    for (AbstractAircraft enemyAircraft : enemyAircrafts) {
+                        if(enemyAircraft instanceof BossEnemy)
+                        {
+                            noBoss = false;
+                        }
+                    }
+
+                    if(noBoss) {
+                        enemyAircrafts.add(bossEnemyFactory.createEnemy());
                     }
                 }
                 // 飞机射出子弹

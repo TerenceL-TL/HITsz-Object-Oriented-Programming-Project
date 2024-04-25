@@ -49,13 +49,33 @@ class EliteEnemy {
     - shootNum:int
     - power:int
     - direction:int
-    + HeroAircraft(int locationX, int locationY, int speedX, int speedY, int hp)
+    + EliteEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
+    + forward():void
+    + shoot():List<BaseBullet>
+}
+
+class SuperEnemy {
+    - shootNum:int
+    - power:int
+    - direction:int
+    + SuperEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
+    + forward():void
+    + shoot():List<BaseBullet>
+}
+
+class BossEnemy {
+    - shootNum:int
+    - power:int
+    - direction:int
+    + BossEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
     + forward():void
     + shoot():List<BaseBullet>
 }
 
 AbstractAircraft <|-- HeroAircraft
 AbstractAircraft <|-- EliteEnemy
+AbstractAircraft <|-- SuperEnemy
+AbstractAircraft <|-- BossEnemy
 
 class MobEnemy {
     + MobEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
@@ -150,8 +170,30 @@ class EliteEnemyFactory{
     + createEnemy():AbstractAircraft
 }
 
+class SuperEnemyFactory{
+    - {static} speedX
+    - {static} speedY
+    - {static} hp
+    + {static} setSpeedX(int _speedX):void
+    + {static} setSpeedY(int _speedY):void
+    + {static} setHp(int _hp):void
+    + createEnemy():AbstractAircraft
+}
+
+class BossEnemyFactory{
+    - {static} speedX
+    - {static} speedY
+    - {static} hp
+    + {static} setSpeedX(int _speedX):void
+    + {static} setSpeedY(int _speedY):void
+    + {static} setHp(int _hp):void
+    + createEnemy():AbstractAircraft
+}
+
 EnemyFactory <|.. MobEnemyFactory
 EnemyFactory <|.. EliteEnemyFactory
+EnemyFactory <|.. SuperEnemyFactory
+EnemyFactory <|.. BossEnemyFactory
 
 interface PropFactory{
     + {abstract} createProp(int spawnX, int spawnY, int speedX, int speedY):BaseProp
