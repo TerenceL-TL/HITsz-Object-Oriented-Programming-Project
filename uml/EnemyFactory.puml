@@ -1,0 +1,106 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class AbstractAircraft
+{
+	# maxHp:int
+    # hp:int
+    + AbstractAircraft(int locationX, int locationY, int speedX, int speedY, int hp)
+    + decreaseHp(int decrease):void
+    + getHp():int
+    + {abstract} shoot():List<BaseBullet>
+ }
+
+class EliteEnemy {
+    - shootNum:int
+    - power:int
+    - direction:int
+    + EliteEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
+    + forward():void
+    + shoot():List<BaseBullet>
+}
+
+class SuperEnemy {
+    - shootNum:int
+    - power:int
+    - direction:int
+    + SuperEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
+    + forward():void
+    + shoot():List<BaseBullet>
+}
+
+class BossEnemy {
+    - shootNum:int
+    - power:int
+    - direction:int
+    + BossEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
+    + forward():void
+    + shoot():List<BaseBullet>
+}
+
+AbstractAircraft <|-- EliteEnemy
+AbstractAircraft <|-- SuperEnemy
+AbstractAircraft <|-- BossEnemy
+
+class MobEnemy {
+    + MobEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
+    + forward():void
+    + shoot():List<BaseBullet>
+}
+AbstractAircraft <|-- MobEnemy
+
+interface EnemyFactory{
+    + {abstract} createEnemy():AbstractAircraft
+}
+
+class MobEnemyFactory{
+    - {static} speedX
+    - {static} speedY
+    - {static} hp
+    + {static} setSpeedX(int _speedX):void
+    + {static} setSpeedY(int _speedY):void
+    + {static} setHp(int _hp):void
+    + createEnemy():AbstractAircraft
+}
+
+class EliteEnemyFactory{
+    - {static} speedX
+    - {static} speedY
+    - {static} hp
+    + {static} setSpeedX(int _speedX):void
+    + {static} setSpeedY(int _speedY):void
+    + {static} setHp(int _hp):void
+    + createEnemy():AbstractAircraft
+}
+
+class SuperEnemyFactory{
+    - {static} speedX
+    - {static} speedY
+    - {static} hp
+    + {static} setSpeedX(int _speedX):void
+    + {static} setSpeedY(int _speedY):void
+    + {static} setHp(int _hp):void
+    + createEnemy():AbstractAircraft
+}
+
+class BossEnemyFactory{
+    - {static} speedX
+    - {static} speedY
+    - {static} hp
+    + {static} setSpeedX(int _speedX):void
+    + {static} setSpeedY(int _speedY):void
+    + {static} setHp(int _hp):void
+    + createEnemy():AbstractAircraft
+}
+
+EnemyFactory <|.. MobEnemyFactory
+EnemyFactory <|.. EliteEnemyFactory
+EnemyFactory <|.. SuperEnemyFactory
+EnemyFactory <|.. BossEnemyFactory
+
+MobEnemy <.. MobEnemyFactory
+EliteEnemy <.. EliteEnemyFactory
+SuperEnemy <.. SuperEnemyFactory
+BossEnemy <.. BossEnemyFactory
+
+@enduml

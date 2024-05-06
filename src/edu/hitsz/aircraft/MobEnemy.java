@@ -31,5 +31,4 @@ public class MobEnemy extends AbstractAircraft {
     public List<BaseBullet> shoot() {
         return new LinkedList<>();
     }
-
 }

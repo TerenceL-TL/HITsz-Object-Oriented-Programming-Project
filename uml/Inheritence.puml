@@ -31,6 +31,7 @@ abstract class AbstractAircraft
     # hp:int
     + AbstractAircraft(int locationX, int locationY, int speedX, int speedY, int hp)
     + decreaseHp(int decrease):void
+    + increaseHp(int increase):void
     + getHp():int
     + {abstract} shoot():List<BaseBullet>
  }
@@ -40,7 +41,18 @@ class HeroAircraft {
     - shootNum:int
     - power:int
     - direction:int
-    + HeroAircraft(int locationX, int locationY, int speedX, int speedY, int hp)
+    - HeroAircraft(int locationX, int locationY, int speedX, int speedY, int hp)
+    - {static} instance:HeroAircraft
+    + {static} getInstance():HeroAircraft
+    + forward():void
+    + shoot():List<BaseBullet>
+    + setShootNum():void
+}
+
+AbstractAircraft <|-- HeroAircraft
+
+class MobEnemy {
+    + MobEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
     + forward():void
     + shoot():List<BaseBullet>
 }
@@ -72,79 +84,10 @@ class BossEnemy {
     + shoot():List<BaseBullet>
 }
 
-AbstractAircraft <|-- HeroAircraft
 AbstractAircraft <|-- EliteEnemy
 AbstractAircraft <|-- SuperEnemy
-AbstractAircraft <|-- BossEnemy
-
-class MobEnemy {
-    + MobEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
-    + forward():void
-    + shoot():List<BaseBullet>
-}
 AbstractAircraft <|-- MobEnemy
-
-abstract class BaseBullet
-{
-    - power:int
-    + BaseBullet(int locationX, int locationY, int speedX, int speedY, int power)
-    + forward():void
-	+ getPower():int
-}
-
-class HeroBullet {
-    + HeroBullet(int locationX, int locationY,
-     int speedX, int speedY, int power)
-}
-
-class EnemyBullet {
-    + EnemyBullet(int locationX, int locationY,
-     int speedX, int speedY, int power)
-}
-
-BaseBullet <|-- HeroBullet
-BaseBullet <|-- EnemyBullet
-
-abstract class BaseProp {
-    - imme_effect:boolean
-    - effect_time:double
-    + isImme_effect():boolean
-    + get_effect_time():double
-    + forward():void
-    + {abstract} effect(HeroAircraft obj):void
-}
-
-class BombProp{
-    + BombProp(int locationX, int locationY, int speedX, int speedY, boolean imme_effect, double effect_time)
-    + effect(HeroAircraft obj):void
-}
-
-class FireBuffProp{
-    - FireBuff:int
-    + changeFireBuff(int FireBuff):void
-    + GetFireBuff():int
-    + FireBuffProp(int locationX, int locationY, int speedX, int speedY, boolean imme_effect, double effect_time, int FireBuff)
-    + effect(HeroAircraft obj):void
-}
-
-class HealProp{
-    - HealHp:int
-    + changeHealHp(int HealHp):void
-    + GetHealHp():int
-    + HealProp(int locationX, int locationY,
-                                  int speedX, int speedY,
-                                  boolean imme_effect, double effect_time,
-                                  int HealHp)
-    + effect(HeroAircraft obj):void
-}
-
-BaseProp <|-- BombProp
-BaseProp <|-- FireBuffProp
-BaseProp <|-- HealProp
-
-AbstractFlyingObject <|-- AbstractAircraft
-AbstractFlyingObject <|-- BaseBullet
-AbstractFlyingObject <|-- BaseProp
+AbstractAircraft <|-- BossEnemy
 
 interface EnemyFactory{
     + {abstract} createEnemy():AbstractAircraft
@@ -195,6 +138,83 @@ EnemyFactory <|.. EliteEnemyFactory
 EnemyFactory <|.. SuperEnemyFactory
 EnemyFactory <|.. BossEnemyFactory
 
+MobEnemy <.. MobEnemyFactory
+EliteEnemy <.. EliteEnemyFactory
+SuperEnemy <.. SuperEnemyFactory
+BossEnemy <.. BossEnemyFactory
+
+class EnemyCreator {
+    - {static} instance:EnemyCreator
+    + createEnemy():AbstractAircraft
+}
+
+EnemyFactory <.. EnemyCreator
+AbstractAircraft <.. EnemyCreator
+
+abstract class BaseBullet
+{
+    - power:int
+    + BaseBullet(int locationX, int locationY, int speedX, int speedY, int power)
+    + forward():void
+	+ getPower():int
+}
+
+class HeroBullet {
+    + HeroBullet(int locationX, int locationY,
+     int speedX, int speedY, int power)
+}
+
+class EnemyBullet {
+    + EnemyBullet(int locationX, int locationY,
+     int speedX, int speedY, int power)
+}
+
+BaseBullet <|-- HeroBullet
+BaseBullet <|-- EnemyBullet
+
+AbstractFlyingObject <|-- AbstractAircraft
+AbstractFlyingObject <|-- BaseBullet
+
+abstract class BaseProp {
+    - imme_effect:boolean
+    - effect_time:double
+    + isImme_effect():boolean
+    + get_effect_time():double
+    + forward():void
+    + {abstract} effect(HeroAircraft obj):void
+}
+
+class BombProp{
+    + BombProp(int locationX, int locationY, int speedX, int speedY, boolean imme_effect, double effect_time)
+    + effect(HeroAircraft obj):void
+}
+
+class FireBuffProp{
+    + FireBuffProp(int locationX, int locationY, int speedX, int speedY, boolean imme_effect, double effect_time)
+    + effect(HeroAircraft obj):void
+}
+
+class SuperFireSupplyProp{
+    + SuperFireSupplyProp(int locationX, int locationY, int speedX, int speedY, boolean imme_effect, double effect_time)
+    + effect(HeroAircraft obj):void
+}
+
+class HealProp{
+    - HealHp:int
+    + changeHealHp(int HealHp):void
+    + GetHealHp():int
+    + HealProp(int locationX, int locationY,
+                                  int speedX, int speedY,
+                                  boolean imme_effect, double effect_time,
+                                  int HealHp)
+    + effect(HeroAircraft obj):void
+}
+
+BaseProp <|-- BombProp
+BaseProp <|-- FireBuffProp
+BaseProp <|-- HealProp
+BaseProp <|-- SuperFireSupplyProp
+
 interface PropFactory{
     + {abstract} createProp(int spawnX, int spawnY, int speedX, int speedY):BaseProp
 }
@@ -207,14 +227,33 @@ class FireBuffPropFactory{
     + createProp(int spawnX, int spawnY, int speedX, int speedY):BaseProp
 }
 
+class SuperFireBuffPropFactory{
+    + createProp(int spawnX, int spawnY, int speedX, int speedY):BaseProp
+}
+
 class HealPropFactory{
     + createProp(int spawnX, int spawnY, int speedX, int speedY):BaseProp
 }
 
 PropFactory <|.. BombPropFactory
 PropFactory <|.. FireBuffPropFactory
+PropFactory <|.. SuperFireBuffPropFactory
 PropFactory <|.. HealPropFactory
 
+BombProp <.. BombPropFactory
+FireBuffProp <.. FireBuffPropFactory
+HealProp <.. HealPropFactory
+SuperFireSupplyProp <.. SuperFireBuffPropFactory
 
+class PropGenerator {
+    - {static} instance:PropGenerator
+    + createProp():BaseProp
+}
+
+BaseProp <.. PropFactory
+BaseProp <.. PropGenerator
+PropFactory <.. PropGenerator
+
+AbstractFlyingObject <|-- BaseProp
 
 @enduml

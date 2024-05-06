@@ -20,6 +20,27 @@ public abstract class AbstractAircraft extends AbstractFlyingObject {
     protected int maxHp;
     protected int hp;
 
+    /**
+     * 子弹射击方向 (向上发射：-1，向下发射：1)
+     */
+    private int direction;
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
+
+    private int power;
+    public int getPower() {
+        return power;
+    }
+
+    public void setPower(int power) {
+        this.power = power;
+    }
     public AbstractAircraft(int locationX, int locationY, int speedX, int speedY, int hp) {
         super(locationX, locationY, speedX, speedY);
         this.hp = hp;
@@ -42,13 +63,6 @@ public abstract class AbstractAircraft extends AbstractFlyingObject {
         return hp;
     }
 
-
-    /**
-     * 飞机射击方法，可射击对象必须实现
-     * @return
-     *  可射击对象需实现，返回子弹
-     *  非可射击对象空实现，返回null
-     */
     public abstract List<BaseBullet> shoot();
 
 }

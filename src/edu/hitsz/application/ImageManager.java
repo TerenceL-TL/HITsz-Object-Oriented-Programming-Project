@@ -7,6 +7,7 @@ import edu.hitsz.bullet.HeroBullet;
 import edu.hitsz.props.BombProp;
 import edu.hitsz.props.FireBuffProp;
 import edu.hitsz.props.HealProp;
+import edu.hitsz.props.SuperFireSupplyProp;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -39,6 +40,7 @@ public class ImageManager {
     public static BufferedImage SUPER_ENEMY_IMAGE;
     public static BufferedImage HPSUPPLY_PROP_IMAGE;
     public static BufferedImage FIRESUPPLY_PROP_IMAGE;
+    public static BufferedImage FIRESUPPLY_PLUS_PROP_IMAGE;
     public static BufferedImage BOMBSUPPLY_PROP_IMAGE;
 
     static {
@@ -55,6 +57,7 @@ public class ImageManager {
             ENEMY_BULLET_IMAGE = ImageIO.read(new FileInputStream("src/images/bullet_enemy.png"));
             HPSUPPLY_PROP_IMAGE = ImageIO.read(new FileInputStream("src/images/prop_blood.png"));
             FIRESUPPLY_PROP_IMAGE = ImageIO.read(new FileInputStream("src/images/prop_bullet.png"));
+            FIRESUPPLY_PLUS_PROP_IMAGE = ImageIO.read(new FileInputStream("src/images/prop_bulletPlus.png"));
             BOMBSUPPLY_PROP_IMAGE = ImageIO.read(new FileInputStream("src/images/prop_bomb.png"));
 
             CLASSNAME_IMAGE_MAP.put(HeroAircraft.class.getName(), HERO_IMAGE);
@@ -66,6 +69,7 @@ public class ImageManager {
             CLASSNAME_IMAGE_MAP.put(EnemyBullet.class.getName(), ENEMY_BULLET_IMAGE);
             CLASSNAME_IMAGE_MAP.put(HealProp.class.getName(), HPSUPPLY_PROP_IMAGE);
             CLASSNAME_IMAGE_MAP.put(FireBuffProp.class.getName(), FIRESUPPLY_PROP_IMAGE);
+            CLASSNAME_IMAGE_MAP.put(SuperFireSupplyProp.class.getName(), FIRESUPPLY_PLUS_PROP_IMAGE);
             CLASSNAME_IMAGE_MAP.put(BombProp.class.getName(), BOMBSUPPLY_PROP_IMAGE);
 
         } catch (IOException e) {

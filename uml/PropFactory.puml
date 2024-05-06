@@ -1,0 +1,74 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class BaseProp {
+    - imme_effect:boolean
+    - effect_time:double
+    + isImme_effect():boolean
+    + get_effect_time():double
+    + forward():void
+    + {abstract} effect(HeroAircraft obj):void
+}
+
+class BombProp{
+    + BombProp(int locationX, int locationY, int speedX, int speedY, boolean imme_effect, double effect_time)
+    + effect(HeroAircraft obj):void
+}
+
+class FireBuffProp{
+    + FireBuffProp(int locationX, int locationY, int speedX, int speedY, boolean imme_effect, double effect_time)
+    + effect(HeroAircraft obj):void
+}
+
+class SuperFireSupplyProp{
+    + SuperFireSupplyProp(int locationX, int locationY, int speedX, int speedY, boolean imme_effect, double effect_time)
+    + effect(HeroAircraft obj):void
+}
+
+class HealProp{
+    - HealHp:int
+    + changeHealHp(int HealHp):void
+    + GetHealHp():int
+    + HealProp(int locationX, int locationY,
+                                  int speedX, int speedY,
+                                  boolean imme_effect, double effect_time,
+                                  int HealHp)
+    + effect(HeroAircraft obj):void
+}
+
+BaseProp <|-- BombProp
+BaseProp <|-- FireBuffProp
+BaseProp <|-- HealProp
+BaseProp <|-- SuperFireSupplyProp
+
+interface PropFactory{
+    + {abstract} createProp(int spawnX, int spawnY, int speedX, int speedY):BaseProp
+}
+
+class BombPropFactory{
+    + createProp(int spawnX, int spawnY, int speedX, int speedY):BaseProp
+}
+
+class FireBuffPropFactory{
+    + createProp(int spawnX, int spawnY, int speedX, int speedY):BaseProp
+}
+
+class SuperFireBuffPropFactory{
+    + createProp(int spawnX, int spawnY, int speedX, int speedY):BaseProp
+}
+
+class HealPropFactory{
+    + createProp(int spawnX, int spawnY, int speedX, int speedY):BaseProp
+}
+
+PropFactory <|.. BombPropFactory
+PropFactory <|.. FireBuffPropFactory
+PropFactory <|.. SuperFireBuffPropFactory
+PropFactory <|.. HealPropFactory
+
+BombProp <.. BombPropFactory
+FireBuffProp <.. FireBuffPropFactory
+HealProp <.. HealPropFactory
+SuperFireSupplyProp <.. SuperFireBuffPropFactory
+
+@enduml

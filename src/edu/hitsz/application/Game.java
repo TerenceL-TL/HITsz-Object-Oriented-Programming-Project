@@ -16,6 +16,8 @@ import edu.hitsz.factory.Prop.FireBuffPropFactory;
 import edu.hitsz.factory.Prop.BombPropFactory;
 import edu.hitsz.factory.Prop.HealPropFactory;
 
+import edu.hitsz.scoreboard.Score;
+import edu.hitsz.scoreboard.ScoreBoard;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 import javax.swing.*;
@@ -52,17 +54,21 @@ public class Game extends JPanel {
 
     private final SuperEnemyFactory superEnemyFactory;
     private final BossEnemyFactory bossEnemyFactory;
-    private final EliteEnemyFactory eliteEnemyFactory;
-    private final MobEnemyFactory mobEnemyFactory;
-    private final BombPropFactory bombPropFactory;
-    private final FireBuffPropFactory fireBuffPropFactory;
-    private final HealPropFactory healPropFactory;
+    private final PropGenerator propGenerator_elite;
+    private final PropGenerator propGenerator_super;
+    private final PropGenerator propGenerator_boss;
+
+    MobGenerator enemyGenerator;
 
 
     /**
      * 屏幕中出现的敌机最大数量
      */
     private int enemyMaxNumber = 5;
+    /**
+     * boss limit
+     */
+    private int score_limit = 200;
 
     /**
      * 当前得分
@@ -77,7 +83,7 @@ public class Game extends JPanel {
      * 周期（ms)
      * 指示子弹的发射、敌机的产生频率
      */
-    private int cycleDuration = 400;
+    private int cycleDuration = 600;
     private int cycleTime = 0;
 
     /**
@@ -90,6 +96,8 @@ public class Game extends JPanel {
      */
     private double eliteAppearRate = 0.2;
     private double superAppearRate = 0.2;
+
+    private ScoreBoard scoreBoard;
 
     public Game() {
 
@@ -116,11 +124,15 @@ public class Game extends JPanel {
 
         superEnemyFactory = new SuperEnemyFactory();
         bossEnemyFactory = new BossEnemyFactory();
-        eliteEnemyFactory = new EliteEnemyFactory();
-        mobEnemyFactory = new MobEnemyFactory();
-        healPropFactory = new HealPropFactory();
-        fireBuffPropFactory = new FireBuffPropFactory();
-        bombPropFactory = new BombPropFactory();
+
+        propGenerator_elite = new PropGenerator(0.3, 0.1, 0.1, 0.0, 1);
+        propGenerator_super = new PropGenerator(0.3, 0.2, 0.1, 0.0, 1);
+        propGenerator_boss = new PropGenerator(0.3, 0.1, 0.2, 0.2, 3);
+
+        enemyGenerator = MobGenerator.getInstance();
+
+        scoreBoard = new ScoreBoard();
+        scoreBoard.readFromFile();
 
         /**
          * Scheduled 线程池，用于定时任务调度
@@ -149,36 +161,21 @@ public class Game extends JPanel {
             // 周期性执行（控制频率）
             if (timeCountAndNewCycleJudge()) {
                 System.out.println(time);
+
+                // 分数达到阈值产生Boss
+                if (score >= score_limit) {
+                    enemyAircrafts.add(bossEnemyFactory.createEnemy());
+                    score_limit += 500;
+                }
+
+                // 周期性产生超级精英敌机
+                if (time % 9000 == 0) {
+                    enemyAircrafts.add(superEnemyFactory.createEnemy());
+                }
                 // 新敌机产生
 
                 if (enemyAircrafts.size() < enemyMaxNumber) {
-                    double dice = Math.random();
-                    if (dice < eliteAppearRate + superAppearRate) {
-                        if(dice < eliteAppearRate) {
-                            enemyAircrafts.add(eliteEnemyFactory.createEnemy());
-                        }
-                        else {
-                            enemyAircrafts.add(superEnemyFactory.createEnemy());
-                        }
-                    }
-                    else {
-                        enemyAircrafts.add(mobEnemyFactory.createEnemy());
-                    }
-                }
-
-                if(score % 250 == 0 && score != 0)
-                {
-                    boolean noBoss = true;
-                    for (AbstractAircraft enemyAircraft : enemyAircrafts) {
-                        if(enemyAircraft instanceof BossEnemy)
-                        {
-                            noBoss = false;
-                        }
-                    }
-
-                    if(noBoss) {
-                        enemyAircrafts.add(bossEnemyFactory.createEnemy());
-                    }
+                    enemyAircrafts.add(enemyGenerator.createEnemy());
                 }
                 // 飞机射出子弹
                 shootAction();
@@ -208,6 +205,15 @@ public class Game extends JPanel {
                 executorService.shutdown();
                 gameOverFlag = true;
                 System.out.println("Game Over!");
+
+                // save scores
+                System.out.println("Please Enter Username:");
+                Scanner scanner = new Scanner(System.in);
+                String username = scanner.nextLine();
+                Score score1 = new Score(username, score, new Date());
+                scoreBoard.add(score1);
+                scoreBoard.display();
+                scoreBoard.writeToFile();
             }
 
         };
@@ -298,23 +304,19 @@ public class Game extends JPanel {
                     enemyAircraft.decreaseHp(bullet.getPower());
                     bullet.vanish();
                     if (enemyAircraft.notValid()) {
-                        if (enemyAircraft.getClass().equals(EliteEnemy.class)) {
+                        if (enemyAircraft instanceof EliteEnemy) {
                             score += 20;
-                            double dice = Math.random();
-                            if (dice < 0.3)
-                            {
-                                props.add(healPropFactory.createProp(enemyAircraft.getLocationX(), enemyAircraft.getLocationY(), 0, enemyAircraft.getSpeedY()));
-                            }
-                            else if (dice < 0.6)
-                            {
-                                props.add(fireBuffPropFactory.createProp(enemyAircraft.getLocationX(), enemyAircraft.getLocationY(), 0, enemyAircraft.getSpeedY()));
-                            }
-                            else if (dice < 0.9)
-                            {
-                                props.add(bombPropFactory.createProp(enemyAircraft.getLocationX(), enemyAircraft.getLocationY(), 0, enemyAircraft.getSpeedY()));
-                            }
+                            props.addAll(propGenerator_elite.createProp(enemyAircraft.getLocationX(), enemyAircraft.getLocationY(), 0, enemyAircraft.getSpeedY()));
                         }
-                        else {
+                        else if (enemyAircraft instanceof SuperEnemy) {
+                            score += 30;
+                            props.addAll(propGenerator_super.createProp(enemyAircraft.getLocationX(), enemyAircraft.getLocationY(), 0, enemyAircraft.getSpeedY()));
+                        }
+                        else if (enemyAircraft instanceof BossEnemy) {
+                            score += 100;
+                            props.addAll(propGenerator_boss.createProp(enemyAircraft.getLocationX(), enemyAircraft.getLocationY(), 0, 10));
+                        }
+                        else if (enemyAircraft instanceof MobEnemy) {
                             score += 10;
                         }
                     }

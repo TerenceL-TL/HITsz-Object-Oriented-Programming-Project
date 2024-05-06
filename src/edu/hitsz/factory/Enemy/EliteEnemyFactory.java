@@ -9,7 +9,7 @@ import edu.hitsz.application.Main;
 public class EliteEnemyFactory implements EnemyFactory{
     static {
         speedX = 5;
-        speedY = 10;
+        speedY = 5;
         hp = 60;
     } // easy mode settings as default
 

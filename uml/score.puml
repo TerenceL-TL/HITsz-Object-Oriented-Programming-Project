@@ -1,0 +1,38 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class ScoreBoard {
+    - scoreList:List<Score>
+    + ScoreBoard()
+    + add(Score score):void
+    + remove(int id):void
+    + writeToFile():void
+    + readFromFile():void
+    + display():void
+}
+
+class Score {
+    - username:String
+    - score:int
+    - date:Date
+    + Score(String username, int score, Date date)
+    + getScore():int
+    + setScore(int score):void
+    + getUsername():String
+    + setUsername(String username):void
+    + getDate():Date
+    + toString():String
+}
+
+interface ScoreBoardDAO {
+    + add(Score score):void
+    + remove(int id):void
+    + writeToFile():void
+    + readFromFile():void
+    + display():void
+}
+
+ScoreBoardDAO <|.. ScoreBoard
+Score <-- ScoreBoard
+
+@enduml

@@ -1,0 +1,33 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+interface Strategy {
+    + shoot(AbstractAircraft obj):List<BaseBullet>
+}
+
+class Context {
+    - shoot:Shoot
+    + Context(Strategy strategy)
+    + setStrategy(Strategy strategy):void
+    + executeStrategy(AbstractAircraft obj):List<BaseBullet>
+}
+
+class ShootOne {
+    + shoot(AbstractAircraft obj):List<BaseBullet>
+}
+
+class ShootMulti {
+    + shoot(AbstractAircraft obj):List<BaseBullet>
+}
+
+class ShootCircle {
+    + shoot(AbstractAircraft obj):List<BaseBullet>
+}
+
+Strategy <|.. ShootOne
+Strategy <|.. ShootMulti
+Strategy <|.. ShootCircle
+
+Strategy <--o  Context
+
+@enduml

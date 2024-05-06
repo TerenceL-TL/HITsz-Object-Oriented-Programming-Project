@@ -9,8 +9,8 @@ import edu.hitsz.application.Main;
 public class BossEnemyFactory implements EnemyFactory{
     static {
         speedX = 5;
-        speedY = 10;
-        hp = 120;
+        speedY = 1;
+        hp = 300;
     } // easy mode settings as default
 
     private static int speedX;
