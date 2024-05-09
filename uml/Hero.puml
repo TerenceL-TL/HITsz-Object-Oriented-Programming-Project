@@ -10,7 +10,7 @@ class HeroAircraft {
     + {static} getInstance():HeroAircraft
     + forward():void
     + shoot():List<BaseBullet>
-    + setShootNum():void
+    + setShootNum(int shootNum):void
 }
 
 @enduml
