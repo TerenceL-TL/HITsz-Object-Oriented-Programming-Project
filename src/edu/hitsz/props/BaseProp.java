@@ -1,8 +1,12 @@
 package edu.hitsz.props;
 
+import edu.hitsz.aircraft.AbstractAircraft;
 import edu.hitsz.aircraft.HeroAircraft;
 import edu.hitsz.application.Main;
+import edu.hitsz.application.MusicThread;
 import edu.hitsz.basic.AbstractFlyingObject;
+
+import java.util.List;
 
 public abstract class BaseProp extends AbstractFlyingObject {
     public BaseProp(int locationX, int locationY,
@@ -15,6 +19,8 @@ public abstract class BaseProp extends AbstractFlyingObject {
 
     private final boolean imme_effect;
     private double effect_time;
+    public MusicThread musicThread;
+
 
     public boolean isImme_effect() {
         return imme_effect;
@@ -47,5 +53,5 @@ public abstract class BaseProp extends AbstractFlyingObject {
         }
     }
 
-    public abstract void effect(HeroAircraft obj);
+    abstract public void effect(HeroAircraft obj, List<AbstractAircraft> enemyAircrafts);
 }

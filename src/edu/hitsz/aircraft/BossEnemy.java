@@ -1,6 +1,8 @@
 package edu.hitsz.aircraft;
 
 import edu.hitsz.application.Main;
+import edu.hitsz.application.Menu;
+import edu.hitsz.application.MusicThread;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.bullet.EnemyBullet;
 import edu.hitsz.strategy.Context;
@@ -15,12 +17,17 @@ public class BossEnemy extends AbstractAircraft{
         super(locationX, locationY, speedX, speedY, hp);
         setDirection(1);
         setPower(30);
+        Menu.musicThread.Halt();
+        musicThread = new MusicThread("src/videos/bgm_boss.wav");
+        musicThread.start();
     }
 
     private Context enemyShooter = new Context(new ShootCircle());
 
     private int shootCD = 0;
     private static final int MAXSHOOTCD = 3;
+    public static MusicThread musicThread;
+
 
     public void forward() {
         super.forward();
@@ -41,6 +48,15 @@ public class BossEnemy extends AbstractAircraft{
             shootCD = 0;
             return enemyShooter.executeStrategy(this);
         }
+    }
+
+    @Override
+    public void vanish() {
+        super.vanish();
+        musicThread.Halt();
+        Menu.musicThread = new MusicThread("src/videos/bgm.wav");
+        Menu.musicThread.setIsLoop(true);
+        Menu.musicThread.start();
     }
 
 }

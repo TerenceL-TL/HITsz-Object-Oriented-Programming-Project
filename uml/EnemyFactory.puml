@@ -103,4 +103,15 @@ EliteEnemy <.. EliteEnemyFactory
 SuperEnemy <.. SuperEnemyFactory
 BossEnemy <.. BossEnemyFactory
 
+AbstractAircraft <.. EnemyFactory
+
+
+ class EnemyCreator {
+     - {static} instance:EnemyCreator
+     + createEnemy():AbstractAircraft
+ }
+
+ EnemyFactory <.. EnemyCreator
+ AbstractAircraft <.. EnemyCreator
+
 @enduml

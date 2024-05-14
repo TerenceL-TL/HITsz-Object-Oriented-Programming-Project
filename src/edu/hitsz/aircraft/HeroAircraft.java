@@ -1,5 +1,7 @@
 package edu.hitsz.aircraft;
 
+import edu.hitsz.application.ImageManager;
+import edu.hitsz.application.Main;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.bullet.HeroBullet;
 import edu.hitsz.strategy.Context;
@@ -17,6 +19,8 @@ public class HeroAircraft extends AbstractAircraft {
 
     // Singleton
     private static volatile HeroAircraft craft;
+    private int shootmodestamp = 0;
+
 
     // Get singleton instance
     public static HeroAircraft getInstance(int locationX, int locationY, int speedX, int speedY, int hp)
@@ -54,11 +58,36 @@ public class HeroAircraft extends AbstractAircraft {
 
     public void setShootMode(Strategy mode)
     {
-        heroShooter.setStrategy(mode);
+        Runnable r = () -> {
+
+            try {
+                int nowstamp;
+                synchronized (this) {
+                    heroShooter.setStrategy(mode);
+                    nowstamp = ++shootmodestamp;
+                }
+                Thread.sleep(10000);
+                synchronized (this) {
+                    if (nowstamp == shootmodestamp) heroShooter.setStrategy(new ShootOne());
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        };
+        new Thread(r).start();
     }
     @Override
     public List<BaseBullet> shoot() {
         return heroShooter.executeStrategy(this);
+    }
+
+    public void reset() {
+        heroShooter = new Context(new ShootOne());
+        craft = new HeroAircraft(Main.WINDOW_WIDTH / 2,
+                Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight() ,
+                0, 0, 1000);
+        shootmodestamp = 0;
     }
 
 }

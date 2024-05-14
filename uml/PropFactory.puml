@@ -71,4 +71,14 @@ FireBuffProp <.. FireBuffPropFactory
 HealProp <.. HealPropFactory
 SuperFireSupplyProp <.. SuperFireBuffPropFactory
 
+class PropCreator {
+    - {static} instance:PropCreator
+    + createProp():BaseProp
+}
+
+BaseProp <.. PropFactory
+
+BaseProp <.. PropCreator
+PropFactory <.. PropCreator
+
 @enduml

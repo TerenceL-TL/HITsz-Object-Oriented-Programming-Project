@@ -12,6 +12,9 @@ public class Main {
     public static final int WINDOW_WIDTH = 512;
     public static final int WINDOW_HEIGHT = 768;
 
+    static final CardLayout cardLayout = new CardLayout(0, 0);
+    static final JPanel cardPanel = new JPanel(cardLayout);
+
     public static void main(String[] args) {
 
         System.out.println("Hello Aircraft War");
@@ -26,9 +29,10 @@ public class Main {
                 WINDOW_WIDTH, WINDOW_HEIGHT);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        Game game = new Game();
-        frame.add(game);
+        frame.add(cardPanel);
+
+        Menu menu = new Menu();
+        cardPanel.add(menu.getMainPanel());
         frame.setVisible(true);
-        game.action();
     }
 }

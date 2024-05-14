@@ -1,6 +1,10 @@
 package edu.hitsz.props;
 
+import edu.hitsz.aircraft.AbstractAircraft;
 import edu.hitsz.aircraft.HeroAircraft;
+import edu.hitsz.application.MusicThread;
+
+import java.util.List;
 
 public class HealProp extends BaseProp {
 
@@ -25,7 +29,10 @@ public class HealProp extends BaseProp {
     }
 
     @Override
-    public void effect(HeroAircraft obj) {
+    public void effect(HeroAircraft obj, List<AbstractAircraft> enemyAircrafts)
+    {
+        musicThread = new MusicThread("src/videos/get_supply.wav");
+        musicThread.start();
         System.out.println("Heal active!");
         obj.increaseHp(HealHp);
         vanish();

@@ -34,6 +34,12 @@ import java.util.concurrent.*;
  */
 public class Game extends JPanel {
 
+
+    public enum Difficulty {
+        EASY, NORMAL, HARD
+    }
+
+    private Difficulty difficulty = Difficulty.EASY;
     private int backGroundTop = 0;
 
     /**
@@ -91,6 +97,9 @@ public class Game extends JPanel {
      */
     private boolean gameOverFlag = false;
 
+    private boolean boss_flag = false;
+
+
     /**
      * 精英敌机出现概率
      */
@@ -116,6 +125,7 @@ public class Game extends JPanel {
                 Main.WINDOW_WIDTH / 2,
                 Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight() ,
                 0, 0, 1000);
+        heroAircraft.reset();
 
         enemyAircrafts = new LinkedList<>();
         heroBullets = new LinkedList<>();
@@ -131,9 +141,6 @@ public class Game extends JPanel {
 
         enemyGenerator = MobGenerator.getInstance();
 
-        scoreBoard = new ScoreBoard();
-        scoreBoard.readFromFile();
-
         /**
          * Scheduled 线程池，用于定时任务调度
          * 关于alibaba code guide：可命名的 ThreadFactory 一般需要第三方包
@@ -146,6 +153,13 @@ public class Game extends JPanel {
         new HeroController(this, heroAircraft);
 
     }
+
+    public void setDifficulty(Difficulty difficulty) {
+        this.difficulty = difficulty;
+        scoreBoard = new ScoreBoard();
+        scoreBoard.setDifficulty(difficulty);
+        scoreBoard.readFromFile();
+    } // set game difficulty and read scoreboard via difficulty
 
     /**
      * 游戏启动入口，执行游戏逻辑
@@ -165,7 +179,8 @@ public class Game extends JPanel {
                 // 分数达到阈值产生Boss
                 if (score >= score_limit) {
                     enemyAircrafts.add(bossEnemyFactory.createEnemy());
-                    score_limit += 500;
+                    score_limit += 1000;
+                    boss_flag = true;
                 }
 
                 // 周期性产生超级精英敌机
@@ -201,18 +216,21 @@ public class Game extends JPanel {
 
             // 游戏结束检查英雄机是否存活
             if (heroAircraft.getHp() <= 0) {
-                // 游戏结束
                 executorService.shutdown();
                 gameOverFlag = true;
+                MusicThread musicThread = new MusicThread("src/videos/game_over.wav");
+                musicThread.start();
+                Menu.musicThread.Halt();
+                if (boss_flag) BossEnemy.musicThread.Halt();
                 System.out.println("Game Over!");
-
-                // save scores
-                System.out.println("Please Enter Username:");
-                Scanner scanner = new Scanner(System.in);
-                String username = scanner.nextLine();
+                String username = JOptionPane.showInputDialog(null, "请输入玩家名（默认为Terence）", "Terence");
                 Score score1 = new Score(username, score, new Date());
                 scoreBoard.add(score1);
-                scoreBoard.display();
+                edu.hitsz.application.ScoreBoard scoreBoard1 = new edu.hitsz.application.ScoreBoard();
+                scoreBoard1.setDifficulty(difficulty);
+                scoreBoard1.setTableData(scoreBoard);
+                Main.cardPanel.add(scoreBoard1.getMainPanel());
+                Main.cardLayout.last(Main.cardPanel);
                 scoreBoard.writeToFile();
             }
 
@@ -302,6 +320,8 @@ public class Game extends JPanel {
                     // 敌机撞击到英雄机子弹
                     // 敌机损失一定生命值
                     enemyAircraft.decreaseHp(bullet.getPower());
+                    MusicThread bulletHitMusicThread = new MusicThread("src/videos/bullet_hit.wav");
+                    bulletHitMusicThread.start();
                     bullet.vanish();
                     if (enemyAircraft.notValid()) {
                         if (enemyAircraft instanceof EliteEnemy) {
@@ -334,7 +354,20 @@ public class Game extends JPanel {
                 continue;
             }
             if (heroAircraft.crash(prop)) {
-                prop.effect(heroAircraft);
+                prop.effect(heroAircraft, enemyAircrafts);
+                for (AbstractAircraft enemyAircraft : enemyAircrafts) {
+                    if (enemyAircraft.notValid()) { // check boom!
+                        if (enemyAircraft instanceof EliteEnemy) {
+                            score += 20;
+                        } else if (enemyAircraft instanceof MobEnemy) {
+                            score += 10;
+                        } else if (enemyAircraft instanceof SuperEnemy) {
+                            score += 30;
+                        } else if (enemyAircraft instanceof BossEnemy) {
+                            score += 100;
+                        }
+                    }
+                }
             }
         }
     }
