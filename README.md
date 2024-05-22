@@ -1,2 +1,2 @@
 # HITsz Object-Oriented-Progeamming-Project
-AirCraft War Game Programming Experiment
+The Experiment Project of Course: Object-Oriented-Programming by HITsz
