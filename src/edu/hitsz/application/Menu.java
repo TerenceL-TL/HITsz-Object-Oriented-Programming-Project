@@ -28,15 +28,8 @@ public class Menu {
 		easy.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Game game = new Game();
+				Game game = new EasyGame();
 				game.setDifficulty(Game.Difficulty.EASY);
-				try {
-					ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg.jpg"));;
-				}
-				catch (IOException ioException) {
-					ioException.printStackTrace();
-					System.exit(-1);
-				}
 				Main.cardPanel.add(game);
 				Main.cardLayout.last(Main.cardPanel);
 				game.action();
@@ -45,15 +38,8 @@ public class Menu {
 		normal.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Game game = new Game();
+				Game game = new NormalGame();
 				game.setDifficulty(Game.Difficulty.NORMAL);
-				try {
-					ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg2.jpg"));;
-				}
-				catch (IOException ioException) {
-					ioException.printStackTrace();
-					System.exit(-1);
-				}
 				Main.cardPanel.add(game);
 				Main.cardLayout.last(Main.cardPanel);
 				game.action();
@@ -62,15 +48,8 @@ public class Menu {
 		hard.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Game game = new Game();
+				Game game = new HardGame();
 				game.setDifficulty(Game.Difficulty.HARD);
-				try {
-					ImageManager.BACKGROUND_IMAGE = ImageIO.read(new FileInputStream("src/images/bg3.jpg"));;
-				}
-				catch (IOException ioException) {
-					ioException.printStackTrace();
-					System.exit(-1);
-				}
 				Main.cardPanel.add(game);
 				Main.cardLayout.last(Main.cardPanel);
 				game.action();

@@ -43,5 +43,9 @@ public class SuperEnemy extends AbstractAircraft{
             return enemyShooter.executeStrategy(this);
         }
     }
-
+    @Override
+    public void BoomActivate() {
+        if(notValid()) return;
+        decreaseHp(60);
+    }
 }

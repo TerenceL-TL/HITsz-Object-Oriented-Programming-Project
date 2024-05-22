@@ -12,6 +12,12 @@ public class MobGenerator {
     {
 
     }
+    double eliteAppearRate = 0.2;
+    void setEliteAppearRate(double rate) {eliteAppearRate = rate;}
+    double getEliteAppearRate() {return eliteAppearRate;}
+    double enemyBuffRate = 1;
+    void setEnemyBuffRate(double rate) {enemyBuffRate = rate;}
+    double getEnemyBuffRate() {return enemyBuffRate;}
 
     public static MobGenerator getInstance() {
         if(instance == null)
@@ -32,13 +38,13 @@ public class MobGenerator {
         /**
          * 精英敌机出现概率
          */
-        double eliteAppearRate = 0.2;
         if (dice < eliteAppearRate) {
             enemyFactory = new EliteEnemyFactory();
         }
         else {
             enemyFactory = new MobEnemyFactory();
         }
-        return enemyFactory.createEnemy();
+        return enemyFactory.createEnemy(enemyBuffRate);
     }
+
 }

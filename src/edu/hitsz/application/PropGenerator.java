@@ -2,6 +2,7 @@ package edu.hitsz.application;
 
 import edu.hitsz.factory.Prop.*;
 import edu.hitsz.props.BaseProp;
+import edu.hitsz.props.BombProp;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -41,7 +42,8 @@ public class PropGenerator {
             } else {
                 continue;
             }
-            res.add(propFactory.createProp(locationX + (i * 2 - times + 1) * 20, locationY, speedX, speedY));
+            BaseProp newProp = propFactory.createProp(locationX + (i * 2 - times + 1) * 20, locationY, speedX, speedY);
+            res.add(newProp);
         }
         return res;
     }

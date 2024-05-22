@@ -1,11 +1,14 @@
 package edu.hitsz.props;
 
+import edu.hitsz.Listener.BoomListener;
 import edu.hitsz.aircraft.AbstractAircraft;
 import edu.hitsz.aircraft.HeroAircraft;
 import edu.hitsz.application.Main;
 import edu.hitsz.application.MusicThread;
 import edu.hitsz.basic.AbstractFlyingObject;
+import edu.hitsz.bullet.BaseBullet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BaseProp extends AbstractFlyingObject {
@@ -16,6 +19,7 @@ public abstract class BaseProp extends AbstractFlyingObject {
         this.imme_effect = imme_effect;
         this.effect_time = effect_time;
     }
+    private List<BoomListener> listenerList = new ArrayList<>();
 
     private final boolean imme_effect;
     private double effect_time;
@@ -54,4 +58,16 @@ public abstract class BaseProp extends AbstractFlyingObject {
     }
 
     abstract public void effect(HeroAircraft obj, List<AbstractAircraft> enemyAircrafts);
+
+    public void addListener(BoomListener listener) {
+        listenerList.add(listener);
+    }
+    public void removeListener(BoomListener listener) {
+        listenerList.remove(listener);
+    }
+    public void PropNotifyAll() {
+        for (BoomListener listener : listenerList) {
+            listener.BoomActivate();
+        }
+    }
 }

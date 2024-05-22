@@ -1,5 +1,6 @@
 package edu.hitsz.bullet;
 
+import edu.hitsz.Listener.BoomListener;
 import edu.hitsz.application.Main;
 import edu.hitsz.basic.AbstractFlyingObject;
 
@@ -9,7 +10,7 @@ import edu.hitsz.basic.AbstractFlyingObject;
  *
  * @author hitsz
  */
-public abstract class BaseBullet extends AbstractFlyingObject {
+public abstract class BaseBullet extends AbstractFlyingObject implements BoomListener {
 
     private int power = 10;
 

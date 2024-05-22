@@ -20,14 +20,7 @@ public class BombProp extends BaseProp {
         System.out.println("BombSupply active!");
         musicThread = new MusicThread("src/videos/bomb_explosion.wav");
         musicThread.start();
-        for (AbstractAircraft enemyAircraft : enemyAircrafts) {
-            if (enemyAircraft.notValid()) {
-                // 已被其他子弹击毁的敌机，不再检测
-                // 避免多个子弹重复击毁同一敌机的判定
-                continue;
-            }
-            enemyAircraft.decreaseHp(60);
-        }
+        PropNotifyAll();
         System.out.println("Boom!");
         vanish();
     }

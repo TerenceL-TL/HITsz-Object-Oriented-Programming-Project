@@ -1,5 +1,6 @@
 package edu.hitsz.aircraft;
 
+import edu.hitsz.Listener.BoomListener;
 import edu.hitsz.application.Main;
 import edu.hitsz.application.Menu;
 import edu.hitsz.application.MusicThread;
@@ -12,7 +13,7 @@ import edu.hitsz.strategy.ShootMulti;
 import java.util.LinkedList;
 import java.util.List;
 
-public class BossEnemy extends AbstractAircraft{
+public class BossEnemy extends AbstractAircraft {
     public BossEnemy(int locationX, int locationY, int speedX, int speedY, int hp) {
         super(locationX, locationY, speedX, speedY, hp);
         setDirection(1);
@@ -57,6 +58,11 @@ public class BossEnemy extends AbstractAircraft{
         Menu.musicThread = new MusicThread("src/videos/bgm.wav");
         Menu.musicThread.setIsLoop(true);
         Menu.musicThread.start();
+    }
+    @Override
+    public void BoomActivate() {
+        if(notValid()) return;
+        decreaseHp(60);
     }
 
 }

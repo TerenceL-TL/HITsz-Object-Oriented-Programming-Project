@@ -29,12 +29,12 @@ public class MobEnemyFactory implements EnemyFactory{
         hp = _hp;
     }
     @Override
-    public AbstractAircraft createEnemy()
+    public AbstractAircraft createEnemy(double buffrate)
     {
         return new MobEnemy((int) (Math.random() * (Main.WINDOW_WIDTH - ImageManager.MOB_ENEMY_IMAGE.getWidth())),
                 (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05),
-                speedX,
-                speedY,
-                hp);
+                (int)(speedX * buffrate),
+                (int)(speedY * buffrate),
+                (int)(hp * buffrate));
     }
 }

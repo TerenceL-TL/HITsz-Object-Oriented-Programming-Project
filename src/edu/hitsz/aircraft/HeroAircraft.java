@@ -1,5 +1,6 @@
 package edu.hitsz.aircraft;
 
+import edu.hitsz.Listener.BoomListener;
 import edu.hitsz.application.ImageManager;
 import edu.hitsz.application.Main;
 import edu.hitsz.bullet.BaseBullet;
@@ -88,6 +89,10 @@ public class HeroAircraft extends AbstractAircraft {
                 Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight() ,
                 0, 0, 1000);
         shootmodestamp = 0;
+    }
+
+    @Override
+    public void BoomActivate() {
     }
 
 }

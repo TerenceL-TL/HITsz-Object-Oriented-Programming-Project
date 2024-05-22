@@ -51,5 +51,10 @@ public class EliteEnemy extends AbstractAircraft {
         }
     }
 
+    @Override
+    public void BoomActivate() {
+        if(notValid()) return;
+        vanish();
+    }
 }
 

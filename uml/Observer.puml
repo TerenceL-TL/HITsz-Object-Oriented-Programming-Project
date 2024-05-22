@@ -1,0 +1,79 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class BoomListener {
+    + {abstract} BoomActivate():void
+}
+
+class BaseProp {
+    - listenerList:List<BoomListener>
+    + {abstract} effect(HeroAircraft obj, List<AbstractAircraft> enemyAircrafts, List<BaseBullet> enemyBullets):void
+    + addListener(BoomListener listener):void
+    + removeListener(BoomListener listener):void
+    + PropNotifyAll():void
+}
+
+class BombProp{
+    + BombProp(int locationX, int locationY, int speedX, int speedY, boolean imme_effect, double effect_time)
+    + effect(HeroAircraft obj):void
+}
+
+class Game {
+    - ...
+    + ...
+}
+
+
+class MobEnemy {
+    - ...
+    + BoomActivate():void
+    + ...
+}
+
+class EliteEnemy {
+    - ...
+    + BoomActivate():void
+    + ...
+}
+
+class SuperEnemy {
+    - ...
+    + BoomActivate():void
+    + ...
+}
+
+class BossEnemy {
+    - ...
+    + BoomActivate():void
+    + ...
+}
+
+class BaseBullet {
+    - ...
+    + BoomActivate():void
+    + ...
+}
+
+class EnemyBullet {
+    - ...
+    + BoomActivate():void
+    + ...
+}
+
+BaseProp <|-- BombProp
+
+BombProp <-- Game
+BoomListener <.. Game
+
+
+BaseBullet <.. EnemyBullet
+
+BoomListener <|.. MobEnemy
+BoomListener <|.. EliteEnemy
+BoomListener <|.. SuperEnemy
+BoomListener <|.. BossEnemy
+BoomListener <|.. BaseBullet
+
+BoomListener <--o BombProp
+
+@enduml
